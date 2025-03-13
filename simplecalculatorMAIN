@@ -1,0 +1,19 @@
+package com.mycompany.calculatorgui;
+import javax.swing.*;
+
+public class CalculatorMain {
+
+    public static void main(String[] args) {
+        // Run the GUI application on the Event Dispatch Thread
+        SwingUtilities.invokeLater(() -> {
+            try {
+                // Create the GUI and display the frame
+                CalculatorGUI window = new CalculatorGUI();
+                window.getFrame().setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+}
+
