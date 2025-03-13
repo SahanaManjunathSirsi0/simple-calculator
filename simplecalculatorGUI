@@ -1,0 +1,131 @@
+package com.mycompany.calculatorgui;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class CalculatorGUI {
+
+    // Frame
+    private JFrame frame;
+    private JTextField textField;
+
+    // Store operator and operands
+    private double num1, num2, result;
+    private String operator;
+
+    // Constructor to initialize the frame and components
+    public CalculatorGUI() {
+        frame = new JFrame();
+        frame.setTitle("Simple Calculator");
+        frame.setBounds(100, 100, 350, 450);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(null);
+
+        // Text Field to display input and result
+        textField = new JTextField();
+        textField.setBounds(10, 10, 310, 50);
+        textField.setFont(new Font("Arial", Font.PLAIN, 24));
+        textField.setEditable(false);
+        frame.getContentPane().add(textField);
+        textField.setColumns(10);
+
+        // Add menu bar
+        JMenuBar menuBar = new JMenuBar();
+        frame.setJMenuBar(menuBar);
+
+        JMenu menu = new JMenu("File");
+        menuBar.add(menu);
+
+        JMenuItem resetMenuItem = new JMenuItem("Reset");
+        menu.add(resetMenuItem);
+
+        resetMenuItem.addActionListener(e -> resetCalculator());
+
+        // Add number and operator buttons
+        String[] buttons = {
+            "7", "8", "9", "/",
+            "4", "5", "6", "*",
+            "1", "2", "3", "-",
+            "C", "0", "=", "+"
+        };
+
+        int x = 10;
+        int y = 70;
+        for (String text : buttons) {
+            JButton button = new JButton(text);
+            button.setFont(new Font("Arial", Font.PLAIN, 18));
+            button.setBounds(x, y, 70, 50);
+            frame.getContentPane().add(button);
+            button.addActionListener(new ButtonClickListener());
+
+            x += 80;
+            if (x > 240) {
+                x = 10;
+                y += 60;
+            }
+        }
+    }
+
+    // Action Listener for button click
+    private class ButtonClickListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            String command = e.getActionCommand();
+
+            // If the user presses a number or operator
+            if ((command.charAt(0) >= '0' && command.charAt(0) <= '9') || command.equals("/") || command.equals("*") || command.equals("-") || command.equals("+")) {
+                textField.setText(textField.getText() + command);
+            }
+            // If the user presses 'C' (Clear)
+            else if (command.equals("C")) {
+                textField.setText("");
+                num1 = num2 = result = 0;
+                operator = "";
+            }
+            // If the user presses '=' (Equals)
+            else if (command.equals("=")) {
+                num2 = Double.parseDouble(textField.getText().substring(textField.getText().lastIndexOf(operator) + 1));
+                switch (operator) {
+                    case "+":
+                        result = num1 + num2;
+                        break;
+                    case "-":
+                        result = num1 - num2;
+                        break;
+                    case "*":
+                        result = num1 * num2;
+                        break;
+                    case "/":
+                        if (num2 != 0) {
+                            result = num1 / num2;
+                        } else {
+                            textField.setText("Error");
+                            return;
+                        }
+                        break;
+                }
+                textField.setText(String.valueOf(result));
+                num1 = result;
+            }
+            // If the user presses an operator (+, -, *, /)
+            else {
+                operator = command;
+                num1 = Double.parseDouble(textField.getText());
+                textField.setText("");
+            }
+        }
+    }
+
+    // Method to reset the calculator
+    private void resetCalculator() {
+        textField.setText("");
+        num1 = num2 = result = 0;
+        operator = "";
+    }
+
+    // Method to get the JFrame
+    public JFrame getFrame() {
+        return frame;
+    }
+}
